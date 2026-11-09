@@ -1,10 +1,10 @@
 <div align="center">
 
-# 基于集成学习的系外行星宜居潜力评估与可解释性分析系统
+# 基于集成学习的系外行星候选体筛选与类型识别研究
 
-**Exoplanet Habitability Assessment &amp; Interpretability System**
+**Exoplanet Candidate Vetting &amp; Type Identification with Ensemble Learning**
 
-本科毕业设计项目　·　四层任务流水线（含前置候选体筛选）+ SHAP 可解释性 + PyQt5 桌面交互系统
+本科毕业设计项目　·　候选体真伪判定 + 行星类型识别 + 宜居性评估（辅助）+ SHAP 可解释性 + PyQt5 桌面交互系统
 
 ![Python](https://img.shields.io/badge/Python-3.9%2B-3776AB?logo=python&logoColor=white)
 ![scikit-learn](https://img.shields.io/badge/scikit--learn-1.9.1-F7931E?logo=scikitlearn&logoColor=white)
@@ -14,7 +14,7 @@
 ![code](https://img.shields.io/badge/code-MIT-blue)
 ![data](https://img.shields.io/badge/data-CC--BY--4.0-lightgrey)
 
-`5986 颗确认行星`　`98 个原始字段`　`181 个实验产物`　`71 张 300 DPI 图表`　`随机种子 42`
+`5986 颗确认行星`　`98 个原始字段`　`196 个实验产物`　`83 张 300 DPI 图表`　`随机种子 42`
 
 </div>
 
@@ -353,6 +353,8 @@ OBSERVATIONAL_FIELDS = ["detection_type", "detection_type_encoded", "discovered"
 
 ## PyQt5 桌面交互系统
 
+界面分三个标签页：**凌星候选体真伪判定**（默认页）、**行星分类**与**宜居性评估**。
+
 ![桌面系统](figures/08_gui_fullscreen.png)
 
 - **单样本预测**：输入质量、半径、轨道周期、偏心率、恒星质量与温度，
@@ -363,13 +365,36 @@ OBSERVATIONAL_FIELDS = ["detection_type", "detection_type_encoded", "discovered"
 - **演示级界面**：无边框全屏窗口、循环星云背景视频、开屏动画与背景音乐
   （顶部标题横幅与底部状态条全透明，只留文字压在背景上）。
 
+### 行星分类页
+
+![行星分类页](figures/12_gui_classification.png)
+
+- **7 个非泄漏特征**：质量、轨道周期、偏心率、恒星质量、恒星半径、恒星金属丰度、恒星年龄；
+  半径、半长轴和恒星有效温度不进入模型，避免标签泄漏；
+- **受限推断**：半径已知时直接按 1.7 / 3.9 / 6.0 R⊕ 阈值判型；半径缺失时才用模型给出四类概率；
+- **置信度与边界**：硬标签取原始概率 argmax，校准概率只用于显示置信度；海王星类与亚海王星给出边界提示；
+- **TreeSHAP**：展示影响本次分类的前 5 个特征贡献。
+
+### 前置层标签页 · 凌星候选体真伪判定
+
+![前置层判定页](figures/11_gui_koi_vetting.png)
+
+- **输入 11 项凌星观测量**，分组与顺序与训练时的特征顺序一致
+  （凌星观测 / 行星导出量 / 宿主恒星量，即实验里的 V1→V3 档位阶梯）；
+- **三组一键演示样本**：真实行星（Kepler-62 e，P = 0.9882）、假阳性（恒星食，
+  P = 0.0010）、临界样本（Kepler-804 c，P = 0.4971），现场可当场复现；
+- **不确定区间不采信**：概率落在 0.35~0.65 时界面不给结论。依据是测试集分段实测——
+  该区间 33 条样本的正确率仅 54.5%，而两侧分别为 93.2%（≥ 0.65）与 71.9%（< 0.35）；
+- **单样本 TreeSHAP**：给出把结论推向「真实行星 / 假阳性」的 Top6 特征及贡献值；
+- **边界清楚**：本页只做前置筛选，判定结论不参与综合宜居指数评分。
+
 ---
 
 ## 工程实践
 
 | 实践 | 说明 |
 | --- | --- |
-| **一键复现** | `python run_all.py` 依次跑完预处理 → 三层实验 → SHAP → 多行星系统 / 前置层，实测 **791 s**、退出码 0，181 个产物全部自动落盘 |
+| **一键复现** | `python run_all.py` 依次跑完预处理 → 前置层 / 三层实验 → SHAP → 多行星系统与稳健性检验，实测 **597 s**、退出码 0，196 个产物全部自动落盘 |
 | **图表规格** | 全部 300 DPI，中文显示自动配置回退字体链，可直接进论文 |
 | **可复现性** | 全局随机种子 42，所有划分 / 采样 / 训练可复现 |
 | **折内重采样** | SMOTE 只在训练折内做，避免合成样本渗漏到验证 |
@@ -385,7 +410,7 @@ OBSERVATIONAL_FIELDS = ["detection_type", "detection_type_encoded", "discovered"
 # 1. 环境
 pip install -r requirements.txt
 
-# 2. 一键跑完全部实验（约 13 分钟）
+# 2. 一键跑完全部实验（约 10 分钟）
 python run_all.py
 
 # 3. 启动桌面系统

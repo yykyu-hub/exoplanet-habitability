@@ -14,7 +14,7 @@
 ![code](https://img.shields.io/badge/code-MIT-blue)
 ![data](https://img.shields.io/badge/data-CC--BY--4.0-lightgrey)
 
-`5986 颗确认行星`　`98 个原始字段`　`196 个实验产物`　`83 张 300 DPI 图表`　`随机种子 42`
+`3018 条已定论候选体`　`5986 颗确认行星`　`98 个原始字段`　`196 个实验产物`　`83 张 300 DPI 图表`　`随机种子 42`
 
 </div>
 
@@ -73,12 +73,14 @@
 
 ## 数据
 
-**来源**：NASA Exoplanet Archive（Planetary Systems + Composite Parameters）、
-exoplanet.eu 与 Open Exoplanet Catalogue 三源汇总表。
+**来源**：两套数据均通过 Kaggle 公开数据集获取。确认行星表的原始归档为
+Exoplanet.eu（5986 条 × 98 列）；候选体表的原始归档为 NASA Exoplanet Archive
+的 Kepler Q1–Q8 KOI 表（3865 条，已定论 3018 条）。
 
 | 项目 | 数值 |
 | --- | --- |
-| 原始规模 | **5986 行 × 98 列**，`planet_status` 全为 `Confirmed` |
+| 候选体表 | **3865 条 × 49 列**，已定论 3018 条（真实行星 2317 ／ 假阳性 701） |
+| 确认行星表 | **5986 行 × 98 列**，`planet_status` 全为 `Confirmed` |
 | 探测方式分布 | Primary Transit 4462 ｜ Radial Velocity 1034 ｜ Microlensing 252 ｜ RV+Astrometry 54 ｜ Timing 50 |
 | 预处理后 | **5986 行 × 24 列**（字段筛选 / 缺失率报告 / 物理合理性剔除 / 派生特征 / 标签构造） |
 | 派生特征 | 行星密度、恒星辐照通量、轨道稳定性指标 |
@@ -448,9 +450,10 @@ python main_gui.py
 
 | 来源 | 许可 |
 | --- | --- |
-| NASA Exoplanet Archive | Public Domain（NASA 数据政策） |
-| exoplanet.eu | CC-BY-4.0（需署名） |
-| Open Exoplanet Catalogue | CC-BY-SA-4.0 |
+| NASA Exoplanet Archive（Kepler Q1–Q8 KOI） | Public Domain（NASA 数据政策） |
+| Exoplanet.eu（确认行星表） | CC-BY-4.0（需署名） |
+
+两套数据均经 Kaggle 获取；Kaggle 仅作为分发渠道，许可遵循原始归档。
 
 **主要方法参考**：
 
